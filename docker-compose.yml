@@ -1,0 +1,21 @@
+# Requiere los clústeres (rabbit y kafka) y la red: docker network create ticketfilms-net
+services:
+  ms-admin-mensajeria:
+    build: .
+    container_name: ms-admin-mensajeria
+    restart: on-failure
+    ports:
+      - "8085:8085"
+    environment:
+      JAVA_TOOL_OPTIONS: "-Xmx256m"
+      COGNITO_ISSUER_URI: ${COGNITO_ISSUER_URI}
+      ADMIN_GRUPO: ${ADMIN_GRUPO:-admin}
+      KAFKA_BOOTSTRAP_SERVERS: kafka1:29092,kafka2:29092,kafka3:29092
+      RABBITMQ_ADDRESSES: rabbit1:5672,rabbit2:5672
+      RABBITMQ_USER: ${RABBITMQ_USER:-guest}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD:-guest}
+
+networks:
+  default:
+    name: ticketfilms-net
+    external: true
