@@ -22,7 +22,7 @@ import com.ticketfilms.msadmin.service.KafkaAdminService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/mensajeria/kafka")
+@RequestMapping("/api/admin/kafka")
 public class KafkaAdminController {
 
     private final KafkaAdminService servicio;
