@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -41,6 +42,15 @@ import org.springframework.web.server.ResponseStatusException;
 public class KafkaAdminService {
 
     private static final long ESPERA_SEGUNDOS = 10;
+
+    // 1. Tópicos que pertenecen al flujo de negocio de TicketFilms y sus DLTs.
+    // NO se pueden borrar ni modificar desde el panel de administración para evitar accidentes.
+    private static final Set<String> TOPICOS_PROTEGIDOS = Set.of(
+            "compra.fallida",
+            "compra.fallida.DLT",
+            "reserva.expirada",
+            "reserva.expirada.DLT"
+    );
 
     private final AdminClient admin;
 
@@ -149,9 +159,19 @@ public class KafkaAdminService {
     }
 
     private void rechazarInterno(String nombre) {
-        if (nombre != null && nombre.startsWith("__")) {
+        if (nombre == null) {
+            return;
+        }
+
+        if (nombre.startsWith("__")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
                     "Los tópicos internos de Kafka (__*) no se administran desde aquí");
+        }
+
+        // Validación agregada: proteger tópicos de negocio
+        if (TOPICOS_PROTEGIDOS.contains(nombre)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "El tópico '" + nombre + "' es del sistema y no se puede eliminar o modificar");
         }
     }
 
