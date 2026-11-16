@@ -25,7 +25,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http,
-            @Value("${admin.grupo:admin}") String grupoAdmin) throws Exception {
+            @Value("${admin.group:admin}") String grupoAdmin) throws Exception {
 
         JwtAuthenticationConverter convertidor = new JwtAuthenticationConverter();
         convertidor.setJwtGrantedAuthoritiesConverter(new CognitoGruposConverter());
