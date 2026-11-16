@@ -22,6 +22,8 @@ Anteriormente, `ms-notificaciones` tenía un controlador (`RabbitAdminController
    - Exige un JWT válido de Amazon Cognito con el grupo `admin` (`ROLE_admin`).
 
 ## Evidencia de funcionamiento
-- Creación del tópico `ticketfilms.boletos` y `ticketfilms.reservas` con 3 particiones y 3 réplicas (HTTP 201).
-- Listado de colas de Rabbit (HTTP 200).
-- Rechazo de borrado de cola protegida (HTTP 409).
+- Tópicos del flujo `compra.fallida` y `reserva.expirada` (3 particiones, 3 réplicas,
+  min.insync.replicas=2), visibles en Kafka UI y con `GET /api/admin/kafka/topics/{nombre}`.
+- Creación y eliminación de un tópico de prueba (`demo.admin`) por la API (201 y 204).
+- Consulta de lag por grupo: `GET /api/admin/kafka/grupos/ms-asientos-analitica/lag`.
+- Listado de colas de Rabbit (200) y rechazo de borrado de cola protegida (409).
